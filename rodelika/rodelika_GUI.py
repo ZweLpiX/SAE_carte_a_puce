@@ -3,7 +3,7 @@ from tkinter import messagebox, simpledialog, Toplevel, Label, Entry, Button
 import mysql.connector
 from datetime import datetime
 
-# Connexion à la base de données
+# Connexion à la base de données mysql
 cnx = mysql.connector.connect(user='root', password='root', host='localhost', database='purpledragon')
 
 def get_list_students():
