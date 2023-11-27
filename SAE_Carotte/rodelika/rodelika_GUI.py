@@ -3,7 +3,7 @@ from tkinter import messagebox, simpledialog, Toplevel, Label, Entry, Button
 import mysql.connector
 from datetime import datetime
 
-# Connexion à la base de données mysql
+# Connexion à la base de données
 cnx = mysql.connector.connect(user='root', password='root', host='localhost', database='purpledragon')
 
 def get_list_students():
@@ -74,7 +74,7 @@ def assign_bonus_gui():
     messagebox.showinfo("Bonus", f"Bonus de {montant} euros attribué à l'étudiant {etu_id}.")
 
 def show_credits():
-    messagebox.showinfo("Crédits", "Logiciel SAE.\nAbsolument pas développé par Nico :)" )
+    messagebox.showinfo("Crédits", "Logiciel SAE.\n Nabil, Clément, Maxime, Nicolas !" )
 
 # Création de l'interface graphique
 root = tk.Tk()

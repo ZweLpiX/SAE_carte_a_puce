@@ -5,7 +5,7 @@ import subprocess
 def run_command(command, label):
     try:
         # Exécute la commande dans le répertoire spécifié
-        subprocess.run(command, cwd="/home/user/Bureau/SAE_Carotte/Rubrovitamin", check=True)
+        subprocess.run(command, cwd="/home/user/Bureau/Rubrovitamin", check=True)
         # Met à jour l'étiquette avec un message de succès
         label.config(text=f"Commande '{' '.join(command)}' exécutée avec succès.")
     except subprocess.CalledProcessError:

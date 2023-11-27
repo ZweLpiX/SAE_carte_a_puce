@@ -4,7 +4,9 @@ Ce README a pour objectif de vous donner un aperçu complet de ce que permet de 
 
 IMPORTANT = Pour utiliser les programmes, il faut activer l'environnement de développement avec la commande :
 
-"source ./Lubiana/bin/activate"
+"source chemin jusqu'à Rubrovitamin /Rubrovitamin/bin/activate"
+
+Vous pouvez également vous contentez de lancer le script shell conscaré à Rubrovitamin.
 
 Rentrons dans le vif du sujet ! Nommons déjà les logiciels présents dans notre dossier. 
 

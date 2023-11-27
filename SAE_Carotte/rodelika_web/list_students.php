@@ -6,14 +6,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Configuration de la base de données
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "purpledragon";
 
-// Connexion à la base de données
-$conn = new mysqli($servername, $username, $password, $dbname);
+
+include 'config.php';
+
+$conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
 
 // Vérifier la connexion
 if ($conn->connect_error) {

@@ -1,4 +1,6 @@
 import tkinter as tk
+import re
+from datetime import datetime
 import tkinter.simpledialog as sd
 from smartcard.System import readers
 from smartcard.Exceptions import CardConnectionException
@@ -21,6 +23,18 @@ def init_smart_card():
 # Initialisation automatique du lecteur de carte
 init_message = init_smart_card()
 
+
+global is_card_assigned
+is_card_assigned = False
+        
+def is_valid_date(date_str):
+    """ Vérifie si la date est valide et dans la plage spécifiée. """
+    try:
+        date_obj = datetime.strptime(date_str, '%d%m%Y')
+        return 1950 <= date_obj.year <= 2010
+    except ValueError:
+        return False
+        
 def print_version(status_label):
     global conn_reader
     if not conn_reader:
@@ -82,50 +96,75 @@ def print_birth():
     except CardConnectionException:
         return "Erreur lors de la lecture de la date de naissance."
 
+def is_valid_name(name):
+    """ Vérifie si le nom/prénom est valide. """
+    return re.match(r'^[A-Z][a-zA-Z]{0,9}$', name) is not None
+
 def intro_nom():
     global conn_reader
-    nom = sd.askstring("Nom de l'élève", "Saisissez le Nom de l'élève :")
-    if not nom:
-        return "Annulé"
-
-    apdu = [0x81, 0x01, 0x00, 0x00, len(nom)] + [ord(c) for c in nom]
-    try:
-        conn_reader.transmit(apdu)
-        return f"Nom attribué : {nom}"
-    except CardConnectionException as e:
-        return "Erreur : " + str(e)
+    while True:
+        nom = sd.askstring("Nom de l'élève", "Saisissez le Nom de l'élève :")
+        if nom is None:
+            return "Action annulée."
+        if is_valid_name(nom):
+            apdu = [0x81, 0x01, 0x00, 0x00, len(nom)] + [ord(c) for c in nom]
+            try:
+                conn_reader.transmit(apdu)
+                return f"Nom attribué : {nom}"
+            except CardConnectionException as e:
+                return "Erreur : " + str(e)
+        else:
+            tk.messagebox.showerror("Erreur", "Nom invalide. Veuillez entrer un nom correct.")
 
 def intro_prenom():
     global conn_reader
-    prenom = sd.askstring("Prénom de l'élève", "Saisissez le Prénom de l'élève :")
-    if not prenom:
-        return "Annulé"
+    while True:
+        prenom = sd.askstring("Prénom de l'élève", "Saisissez le Prénom de l'élève :")
+        if prenom is None:
+            return "Annulé"
+        if not is_valid_name(prenom):
+            tk.messagebox.showerror("Erreur", "Prénom invalide. Veuillez entrer un prénom correct.")
+            continue
+        apdu = [0x81, 0x03, 0x00, 0x00, len(prenom)] + [ord(c) for c in prenom]
+        try:
+            conn_reader.transmit(apdu)
+            return f"Prénom attribué : {prenom}"
+        except CardConnectionException as e:
+            return "Erreur : " + str(e)
 
-    apdu = [0x81, 0x03, 0x00, 0x00, len(prenom)] + [ord(c) for c in prenom]
+def is_valid_date(date_str):
+    """ Vérifie si la date est valide et dans la plage spécifiée. """
     try:
-        conn_reader.transmit(apdu)
-        return f"Prénom attribué : {prenom}"
-    except CardConnectionException as e:
-        return "Erreur : " + str(e)
+        date_obj = datetime.strptime(date_str, '%d%m%Y')
+        return 1 <= date_obj.day <= 31 and 1 <= date_obj.month <= 12 and 1950 <= date_obj.year <= 2010
+    except ValueError:
+        return False
 
 def intro_birth():
     global conn_reader
-    birth = sd.askstring("Date de naissance", "Saisissez la date de naissance (Format : JJMMAAAA) :")
-    if not birth:
-        return "Annulé"
+    while True:
+        birth = sd.askstring("Date de naissance", "Saisissez la date de naissance (Format : JJMMAAAA) :")
+        if not birth:
+            return "Annulé"
+        if not is_valid_date(birth):
+            tk.messagebox.showerror("Erreur", "Date invalide. Veuillez saisir une date cohérente.")
+            continue
 
-    apdu = [0x81, 0x05, 0x00, 0x00, len(birth)] + [ord(c) for c in birth]
-    try:
-        conn_reader.transmit(apdu)
-        return f"Date de naissance attribuée : {birth[:2]}/{birth[2:4]}/{birth[4:]}"
-    except CardConnectionException as e:
-        return "Erreur : " + str(e)
+        apdu = [0x81, 0x05, 0x00, 0x00, len(birth)] + [ord(c) for c in birth]
+        try:
+            conn_reader.transmit(apdu)
+            return f"Date de naissance attribuée : {birth[:2]}/{birth[2:4]}/{birth[4:]}"
+        except CardConnectionException as e:
+            return "Erreur : " + str(e)
 
 def assign_card(status_label):
+    global is_card_assigned
     status_nom = intro_nom()
     status_prenom = intro_prenom()
     status_birth = intro_birth()
     status_label.config(text=f"{status_nom}, {status_prenom}, {status_birth}")
+    if "Nom attribué" in status_nom and "Prénom attribué" in status_prenom and "Date de naissance attribuée" in status_birth:
+        is_card_assigned = True
 
 def recharge_card(status_label):
     global conn_reader
@@ -158,7 +197,7 @@ def show_balance(status_label):
     balance = get_balance()
     status_label.config(text=balance)
     
-    
+  
 # Interface graphique
 root = tk.Tk()
 root.title("Lubiana Control Panel")

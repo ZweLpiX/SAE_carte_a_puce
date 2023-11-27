@@ -7,16 +7,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 
-// Configuration de la base de données
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "purpledragon";
+
+include 'config.php';
+
+
+
 
 // Vérification si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Connexion à la base de données
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
     // Vérifier la connexion
     if ($conn->connect_error) {

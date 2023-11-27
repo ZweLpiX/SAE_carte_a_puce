@@ -7,12 +7,10 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "purpledragon";
+include 'config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
 
 if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);

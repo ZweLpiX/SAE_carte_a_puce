@@ -8,9 +8,9 @@ import smartcard.Exceptions as scardexcp
 import mysql.connector
 
 db_config = {
-    'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
+    'user': 'berlicum',  # L'utilisateur ayant les privilèges
+    'password': 'root',  # Le mot de passe que vous avez indiqué pour 'berlicum'
+    'host': '192.168.56.102',  # L'adresse IP du serveur MySQL distant
     'database': 'purpledragon',
 }
 

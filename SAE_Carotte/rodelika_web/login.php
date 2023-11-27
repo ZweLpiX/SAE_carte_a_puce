@@ -1,12 +1,9 @@
 <?php
 session_start();
 
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "purpledragon";
+include 'config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
@@ -16,16 +13,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
+    // Utilisation de password_hash pour générer le hachage Bcrypt du mot de passe
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
     $sql = $conn->prepare("SELECT id, motdepasse FROM utilisateurs WHERE utilisateur = ?");
     $sql->bind_param("s", $username);
     $sql->execute();
     $sql->store_result();
-    $sql->bind_result($id, $storedPassword);
 
-    if ($sql->num_rows > 0 && $sql->fetch() && $password === $storedPassword) {
-        $_SESSION['user_id'] = $id;
-        header("Location: index.html"); // Redirection vers la page principale
-        exit();
+    if ($sql->num_rows > 0) {
+        // L'utilisateur existe, récupère le mot de passe haché
+        $sql->bind_result($userId, $storedPassword);
+        $sql->fetch();
+
+        // Utilise password_verify pour comparer le mot de passe fourni avec le hachage stocké
+        if (password_verify($password, $storedPassword)) {
+            $_SESSION['user_id'] = $userId;
+            header("Location: index.html");
+            exit();
+        } else {
+            $error = "Nom d'utilisateur ou mot de passe incorrect.";
+        }
     } else {
         $error = "Nom d'utilisateur ou mot de passe incorrect.";
     }
@@ -46,6 +54,5 @@ $conn->close();
 <body>
     <h1>Connexion</h1>
     <?php if (isset($error)) { echo "<p>$error</p>"; } ?>
-    <!-- Ajoutez ici le formulaire de connexion si vous souhaitez qu'il reste sur la même page en cas d'erreur -->
 </body>
 </html>

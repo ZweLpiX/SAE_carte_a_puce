@@ -6,13 +6,23 @@ import smartcard.Exceptions as scardexcp
 import mysql.connector
 import tkinter.messagebox as messagebox
 
-# Configuration de la base de données
 db_config = {
-    'user': 'root',
+    'user': 'berlicum',
     'password': 'root',
-    'host': 'localhost',
+    'host': '192.168.56.102',
     'database': 'purpledragon',
 }
+
+def test_db_connection():
+    try:
+        connection = mysql.connector.connect(**db_config)
+        print("Connexion réussie à la base de données")
+        connection.close()
+    except mysql.connector.Error as err:
+        print("Erreur lors de la connexion à la base de données:", err)
+
+# Appeler cette fonction pour tester la connexion
+test_db_connection()
 
 # Variable globale pour la connexion à la carte
 global conn_reader
@@ -43,14 +53,7 @@ def create_gui():
     status_label = tk.Label(root, text="En attente d'une action...", fg="blue")
     status_label.pack()
     
-# Configuration de la base de données
-db_config = {
-    'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
-    'database': 'purpledragon',
-}
-
+    
 # Autres fonctions (get_student_info_from_db, get_nom, get_prenom, etc.)
 def get_nom():
     apdu = [0x81, 0x02, 0x00, 0x00, 0x00] # Instruction to send to the card

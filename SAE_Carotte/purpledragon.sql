@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 28, 2023 at 07:25 AM
+-- Generation Time: Nov 27, 2023 at 06:27 AM
 -- Server version: 5.7.24
 -- PHP Version: 8.0.1
 
@@ -110,7 +110,8 @@ CREATE TABLE `utilisateurs` (
 --
 
 INSERT INTO `utilisateurs` (`id`, `utilisateur`, `motdepasse`, `nom`, `prenom`) VALUES
-(1, 'admin', 'admin', 'administrateur', 'test');
+(1, 'admin', 'admin', 'administrateur', 'test'),
+(2, 'nab', '$2y$10$Q51LSfV0AscMPBtDoZTOLudYi2gqEI0ylhJTR/rc.I6SHEM.eo/IC', 'nabtestnom', 'nabtestprenom');
 
 --
 -- Indexes for dumped tables
@@ -149,13 +150,13 @@ ALTER TABLE `utilisateurs`
 -- AUTO_INCREMENT for table `etudiant`
 --
 ALTER TABLE `etudiant`
-  MODIFY `etu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `etu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
